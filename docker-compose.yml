@@ -1,0 +1,11 @@
+version: '3'
+services:
+  bot:
+    env_file: .env
+    build: .
+    restart: on-failure
+  redis:
+    image: redis:alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - ./data:/data
