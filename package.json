@@ -1,0 +1,15 @@
+{
+  "name": "royguesses",
+  "version": "1.0.0",
+  "description": "Counts Roy's guesses.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nicklas Vedsted",
+  "license": "GPL-3.0",
+  "repository": "https://github.com/N1ckles/royguesses",
+  "dependencies": {
+    "discord.js": "11.3.0"
+  }
+}
