@@ -20,29 +20,40 @@ async function commandStats(msg) {
     }
 }
 
+/**
+ * Handler for the shutdown command.
+ *
+ * @param {Message} msg The message.
+ * @return {Promise.<void>}
+ */
 async function commandShutdown(msg) {
     cache.quit();
     await msg.reply('👋');
     await msg.client.destroy();
 }
 
+/**
+ * Map of all commands. Maps the base command trigger to a handler.
+ */
 const commands = {
     'stats': commandStats,
     'shutdown': commandShutdown,
 };
 
 /**
- * Parses a message.
+ * Parses a message and check whether it's a command or not.
  *
- * @param {Message} msg
+ * @param {Message} msg The message to parse.
  * @return {Promise.<boolean>} If a command was caught.
  */
-async function parse(msg) {
+module.exports = async(msg) => {
     const { content } = msg;
+    // Ignore non-owners and messages not starting with the prefix.
     if (msg.author.id !== config.owner || !_.startsWith(content, config.commandPrefix)) {
         return false;
     }
 
+    // todo: use _.words
     const command = _.chain(content)
         .split(' ')
         .head()
@@ -59,11 +70,5 @@ async function parse(msg) {
     }
 
     return true;
-}
+};
 
-/**
- * Binds commands to a Discord Client.
- *
- * @param {EventEmitter} client
- */
-module.exports = parse;
