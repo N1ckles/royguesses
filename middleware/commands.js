@@ -5,39 +5,34 @@ const cache = require('../lib/cache');
 const logger = require('../lib/logger');
 
 /**
- * Handler for the stats command.
- *
- * @param {Message} msg The message.
- * @return {Promise.<void>}
- */
-async function commandStats(msg) {
-    const user = msg.mentions.users.first();
-
-    if (!_.isNil(user)) {
-        await msg.reply(`${user.username} has been unsure ${await track.getCount(user.id)} times.`);
-    } else {
-        await msg.reply('please specify a user.');
-    }
-}
-
-/**
- * Handler for the shutdown command.
- *
- * @param {Message} msg The message.
- * @return {Promise.<void>}
- */
-async function commandShutdown(msg) {
-    cache.quit();
-    await msg.reply('👋');
-    await msg.client.destroy();
-}
-
-/**
  * Map of all commands. Maps the base command trigger to a handler.
  */
 const commands = {
-    'stats': commandStats,
-    'shutdown': commandShutdown,
+    'reset': async(msg) => {
+        const user = msg.mentions.users.first();
+
+        if (!_.isNil(user)) {
+            await track.reset(user.id);
+            await msg.reply(`${user.username} has been reset.`);
+        } else {
+            await msg.reply('please specify a user.');
+        }
+    },
+    'shutdown': async (msg) => {
+        cache.quit();
+        await msg.reply('👋');
+        await msg.client.destroy();
+    },
+    'stats': async (msg) => {
+        const user = msg.mentions.users.first();
+
+        if (!_.isNil(user)) {
+            const count = await track.getCount(user.id);
+            await msg.reply(`${user.username} has been unsure ${count} time${(count !== 1) ? 's' : ''}.`);
+        } else {
+            await msg.reply('please specify a user.');
+        }
+    },
 };
 
 /**
@@ -46,8 +41,8 @@ const commands = {
  * @param {Message} msg The message to parse.
  * @return {Promise.<boolean>} If a command was caught.
  */
-module.exports = async(msg) => {
-    const { content } = msg;
+module.exports = async (msg) => {
+    const {content} = msg;
     // Ignore non-owners and messages not starting with the prefix.
     if (msg.author.id !== config.owner || !_.startsWith(content, config.commandPrefix)) {
         return false;

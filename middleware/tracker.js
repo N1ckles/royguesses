@@ -15,7 +15,7 @@ async function parse(msg) {
 
     if (guessCount > 0) {
         const count =  await track.increment(id, guessCount);
-        await msg.channel.send(`${msg.author} has now been unsure ${count} times.`);
+        await msg.channel.send(`${msg.author} has now been unsure ${count} time${(count !== 1) ? 's' : ''}.`);
     }
 }
 
